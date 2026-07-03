@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+  name: demo-api
   namespace: cloudnative-lab
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: api
+      app: demo-api
   template:
     metadata:
       labels:
-        app: api
+        app: demo-api
     spec:
       containers:
-        - name: api
-          image: infra-demo-api:latest
+        - name: demo-api
+          image: cloudnative-demo-api:local
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081

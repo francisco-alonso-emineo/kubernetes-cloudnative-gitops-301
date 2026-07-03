@@ -5,5 +5,5 @@ metadata:
   namespace: cloudnative-lab
 data:
   REDIS_URL: redis://redis:6379/0
-  SERVICE_NAME: cloudnative-demo-api
+  SERVICE_NAME: cloudnative-demo-api-v2
   PORT: "8081"
