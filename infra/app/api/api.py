@@ -1,9 +1,10 @@
-"""API demo del curso — estado M01 (config embebida, solo exploración)."""
+"""API demo del curso — configuración externalizada (12-factor / cloudnative)."""
 from __future__ import annotations
 
+import os
 import random
 import time
-import os
+
 import redis
 from flask import Flask, jsonify
 from psycopg2 import connect
@@ -15,6 +16,12 @@ REDIS_URL = os.environ.get("REDIS_URL", "redis://redis:6379/0")
 API_PORT = int(os.environ.get("PORT", "8081"))
 SERVICE_NAME = os.environ.get("SERVICE_NAME", "cloudnative-demo-api")
 LAB_SLOW_SECONDS = float(os.environ.get("LAB_SLOW_SECONDS", "3"))
+
+
+@app.get("/health")
+def health():
+    """Liveness: el proceso responde."""
+    return jsonify(status="ok", service=SERVICE_NAME)
 
 
 @app.get("/ready")
@@ -29,12 +36,6 @@ def ready():
     except OSError as exc:
         return jsonify(status="not_ready", error=str(exc)), 503
     return jsonify(status="ready", service=SERVICE_NAME)
-    
-
-@app.get("/health")
-def health():
-    """Liveness básico: el proceso Flask responde."""
-    return jsonify(status="ok", service=SERVICE_NAME)
 
 
 @app.get("/work")
