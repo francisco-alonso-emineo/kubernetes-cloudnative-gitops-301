@@ -109,7 +109,7 @@ helm rollback cloudnative-demo 1 -n cloudnative-lab
 
 ### 4 — Recursos y límites
 
-Añade en `infra/helm/environments/values-dev.yaml` (o en el `values.yaml` base si aplica a todos):
+Añade en `infra/helm/environments/values-dev.yaml` (override) o en `values.yaml` del chart:
 
 ```yaml
 api:
@@ -121,7 +121,33 @@ api:
       memory: 512Mi
 ```
 
-Template con `{{ .Values.api.resources }}` en el contenedor.
+En `templates/api.yaml`, dentro del contenedor `api`, **parsea** el bloque con `toYaml` (no imprimas el mapa a pelo):
+
+```yaml
+          {{- with .Values.api.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+```
+
+`with` omite `resources:` si no hay valores; `toYaml` convierte el mapa de values en YAML válido; `nindent` alinea la indentación.
+
+Comprueba el render:
+
+```bash
+helm template cloudnative-demo infra/helm/cloudnative-demo \
+  -n cloudnative-lab \
+  -f infra/helm/environments/values-dev.yaml | grep -A8 "resources:"
+```
+
+Aplica:
+
+```bash
+helm upgrade --install cloudnative-demo infra/helm/cloudnative-demo \
+  -n cloudnative-lab \
+  -f infra/helm/environments/values-dev.yaml
+kubectl -n cloudnative-lab get deploy demo-api -o jsonpath='{.spec.template.spec.containers[0].resources}'
+```
 
 ---
 

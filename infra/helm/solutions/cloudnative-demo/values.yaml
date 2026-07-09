@@ -5,6 +5,12 @@ api:
   image: cloudnative-demo-api:local
   replicas: 2
   servicePort: 8081
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
 
 web:
   image: cloudnative-demo-web:local

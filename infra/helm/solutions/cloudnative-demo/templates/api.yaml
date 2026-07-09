@@ -52,6 +52,10 @@ spec:
             httpGet:
               path: /ready
               port: 8081
+          {{- with .Values.api.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
 ---
 apiVersion: v1
 kind: Service
