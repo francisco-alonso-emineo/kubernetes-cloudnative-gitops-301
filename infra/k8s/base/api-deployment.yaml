@@ -2,7 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-api
-  namespace: cloudnative-lab
+  labels:
+    app: demo-api
 spec:
   replicas: 2
   selector:
@@ -14,36 +15,31 @@ spec:
         app: demo-api
     spec:
       containers:
-        - name: demo-api
+        - name: api
           image: cloudnative-demo-api:local
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
-
           envFrom:
             - configMapRef:
-                name: api-configmap
+                name: demo-api-config
             - secretRef:
-                name: api-secret
-
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
-
+                name: demo-api-secret
           livenessProbe:
             httpGet:
               path: /health
               port: 8081
-            initialDelaySeconds: 10
+            initialDelaySeconds: 15
             periodSeconds: 10
-
           readinessProbe:
             httpGet:
               path: /ready
               port: 8081
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 256Mi

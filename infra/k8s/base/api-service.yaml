@@ -2,12 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: demo-api
-  namespace: cloudnative-lab
 spec:
-  type: ClusterIP
   selector:
     app: demo-api
   ports:
-    - name: demo-api
-      port: 8081
+    - port: 8081
       targetPort: 8081
